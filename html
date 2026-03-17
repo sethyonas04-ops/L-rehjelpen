@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lærehjelp - Din digitale læringspartner</title>
+    <style>
+        :root {
+            --primary: #4a90e2;
+            --secondary: #f39c12;
+            --dark: #2c3e50;
+            --light: #ecf0f1;
+            --success: #27ae60;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            background-color: var(--light);
+            color: var(--dark);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        .hidden { display: none !important; }
+
+        /* --- Landing Side --- */
+        #landing {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 20px;
+        }
+
+        h1 { font-size: 3rem; margin-bottom: 10px; }
+        
+        .hero-image {
+            width: 300px;
+            height: 200px;
+            background: #ddd;
+            margin: 20px 0;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-style: italic;
+            color: #777;
+        }
+
+        .btn-start {
+            padding: 15px 40px;
+            font-size: 1.5rem;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .btn-start:hover { transform: scale(1.05); }
+
+        /* --- Trinnvalg --- */
+        #grade-select {
+            padding: 40px;
+            text-align: center;
+        }
+
+        .grade-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 15px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .grade-btn {
+            padding: 20px;
+            background: white;
+            border: 2px solid var(--primary);
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .grade-btn:hover { background: var(--primary); color: white; }
+
+        /* --- Hoveddashbord --- */
+        #dashboard {
+            padding: 20px;
+            text-align: center;
+        }
+
+        .feature-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .card {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            width: 250px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .card:hover { transform: translateY(-5px); border-top: 5px solid var(--secondary); }
+
+        /* --- AI Chat --- */
+        #chat-window {
+            max-width: 600px;
+            margin: 20px auto;
+            background: white;
+            border-radius: 10px;
+            height: 400px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        #chat-messages {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .chat-input-area { display: flex; padding: 10px; }
+        
+        input[type="text"] {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        .back-btn {
+            margin-top: 20px;
+            background: none;
+            border: none;
+            color: var(--primary);
+            cursor: pointer;
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+    <section id="landing">
+        <h1>Velkommen til Lærehjelp</h1>
+        <div class="hero-image">
+            <img src="https://via.placeholder.com/300x200?text=Bilde+av+læring" alt="Læring" style="width:100%; height:100%; border-radius:15px; object-fit:cover;">
+        </div>
+        <button class="btn-start" onclick="showSection('grade-select')">Start</button>
+    </section>
+
+    <section id="grade-select" class="hidden">
+        <h2>Hvilket trinn går du på?</h2>
+        <div class="grade-grid" id="gradeButtons">
+            </div>
+        <button class="back-btn" onclick="showSection('landing')">Tilbake</button>
+    </section>
+
+    <section id="dashboard" class="hidden">
+        <h2 id="welcome-user">Hva vil du gjøre i dag?</h2>
+        <div class="feature-container">
+            <div class="card" onclick="showSection('ai-chat')">
+                <h3>🤖 AI Hjelper</h3>
+                <p>Få hjelp til oppgaver uten å få svaret servert.</p>
+            </div>
+            <div class="card" onclick="alert('Quiz-funksjon kommer snart!')">
+                <h3>📝 Quiz</h3>
+                <p>Test deg selv i ulike fag og temaer.</p>
+            </div>
+            <div class="card" onclick="alert('Glose-øving kommer snart!')">
+                <h3>🔤 Gloseprøve</h3>
+                <p>Øv på gloser og forbered deg til prøven.</p>
+            </div>
+        </div>
+        <button class="back-btn" onclick="showSection('grade-select')">Bytt trinn</button>
+    </section>
+
+    <section id="ai-chat" class="hidden">
+        <h2 style="text-align: center;">AI Læreassistent</h2>
+        <div id="chat-window">
+            <div id="chat-messages">
+                <p><strong>AI:</strong> Hei! Jeg er her for å hjelpe deg å lære. Hva lurer du på? Jeg gir deg hint, men du må finne ut av svaret selv!</p>
+            </div>
+            <div class="chat-input-area">
+                <input type="text" id="userInput" placeholder="Skriv spørsmålet ditt her...">
+                <button onclick="sendMessage()" style="margin-left:5px; padding: 10px; background: var(--primary); color:white; border:none; border-radius:5px;">Send</button>
+            </div>
+        </div>
+        <div style="text-align:center;">
+            <button class="back-btn" onclick="showSection('dashboard')">Tilbake til meny</button>
+        </div>
+    </section>
+
+    <script>
+        // Generer trinnknapper 3. klasse til VG3
+        const grades = [
+            "3. klasse", "4. klasse", "5. klasse", "6. klasse", "7. klasse", 
+            "8. klasse", "9. klasse", "10. klasse", "VG1", "VG2", "VG3"
+        ];
+
+        const gradeGrid = document.getElementById('gradeButtons');
+        grades.forEach(grade => {
+            const btn = document.createElement('button');
+            btn.className = 'grade-btn';
+            btn.innerText = grade;
+            btn.onclick = () => {
+                document.getElementById('welcome-user').innerText = `Lærehjelp for ${grade}`;
+                showSection('dashboard');
+            };
+            gradeGrid.appendChild(btn);
+        });
+
+        // Navigasjonsfunksjon
+        function showSection(sectionId) {
+            document.querySelectorAll('section').forEach(sec => sec.classList.add('hidden'));
+            document.getElementById(sectionId).classList.remove('hidden');
+        }
+
+        // AI Logikk (Simulert)
+        function sendMessage() {
+            const input = document.getElementById('userInput');
+            const chatMessages = document.getElementById('chat-messages');
+            
+            if (input.value.trim() === "") return;
+
+            // Brukerens melding
+            chatMessages.innerHTML += `<p><strong>Deg:</strong> ${input.value}</p>`;
+            
+            const userText = input.value.toLowerCase();
+            let aiResponse = "";
+
+            // Sjekk om det er et skolerelatert spørsmål
+            if (userText.includes("hva er svaret") || userText.includes("fasit") || userText.includes("=") || userText.includes("hvem er")) {
+                aiResponse = "Det er et godt spørsmål! I stedet for å gi deg svaret med en gang, kan du fortelle meg hva du har tenkt så langt? Kanskje vi kan starte med å bryte ned problemet?";
+            } else {
+                aiResponse = "Interessant! Hvordan tror du dette henger sammen med det du har lært i timen?";
+            }
+
+            // AI svar etter en liten pause
+            setTimeout(() => {
+                chatMessages.innerHTML += `<p><strong>AI:</strong> ${aiResponse}</p>`;
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }, 500);
+
+            input.value = "";
+        }
+
+        // Tillat "Enter" i chatten
+        document.getElementById('userInput').addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') sendMessage();
+        });
+    </script>
+</body>
+</html>
