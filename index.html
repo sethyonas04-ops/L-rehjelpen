@@ -3,252 +3,262 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lærehjelp Pro - Interaktiv Læring</title>
+    <title>Lærehjelp - Quiz & AI</title>
     <style>
         :root {
             --primary: #4a90e2;
-            --secondary: #f39c12;
-            --dark: #2c3e50;
-            --light: #f8f9fa;
-            --ai-bubble: #e1f5fe;
-            --user-bubble: #e8f5e9;
+            --secondary: #27ae60;
+            --accent: #f39c12;
+            --bg: #f4f7f6;
+            --white: #ffffff;
         }
 
-        body {
-            font-family: 'Segoe UI', system-ui, sans-serif;
-            margin: 0;
-            background-color: var(--light);
-            color: var(--dark);
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-        }
-
+        body { font-family: 'Segoe UI', sans-serif; margin: 0; background: var(--bg); color: #333; }
         .hidden { display: none !important; }
+        section { padding: 40px 20px; max-width: 800px; margin: 0 auto; text-align: center; }
 
-        /* --- Landing & Trinn --- */
-        #landing, #grade-select, #dashboard {
-            padding: 40px 20px;
-            text-align: center;
-            max-width: 800px;
-            margin: 0 auto;
-        }
+        /* Knapper og kort */
+        .btn { padding: 12px 30px; border-radius: 25px; border: none; cursor: pointer; font-weight: bold; transition: 0.3s; margin: 5px; }
+        .btn-primary { background: var(--primary); color: white; }
+        .btn-outline { background: white; border: 2px solid var(--primary); color: var(--primary); }
+        .btn-outline:hover { background: var(--primary); color: white; }
+        
+        .card { background: white; padding: 30px; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); margin-bottom: 20px; }
 
-        .hero-image {
-            width: 100%;
-            max-width: 400px;
-            height: 250px;
-            background: #ddd;
-            margin: 20px auto;
-            border-radius: 20px;
-            overflow: hidden;
-        }
+        /* Chat Bobler */
+        #messages { height: 300px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; padding: 10px; border: 1px solid #ddd; border-radius: 10px; margin-bottom: 10px; background: white; }
+        .msg { padding: 10px 15px; border-radius: 15px; max-width: 80%; text-align: left; }
+        .ai { background: #e8e8e8; align-self: flex-start; }
+        .user { background: var(--primary); color: white; align-self: flex-end; }
 
-        .btn-main {
-            padding: 15px 40px;
-            font-size: 1.2rem;
-            background: var(--primary);
-            color: white;
-            border: none;
-            border-radius: 12px;
-            cursor: pointer;
-            font-weight: bold;
-        }
+        /* Quiz Stil */
+        .quiz-option { display: block; width: 100%; padding: 15px; margin: 10px 0; border: 1px solid #ddd; border-radius: 10px; background: white; cursor: pointer; text-align: left; font-size: 1rem; }
+        .quiz-option:hover { background: #f0f7ff; border-color: var(--primary); }
+        .correct { background: #d4edda !important; border-color: #28a745 !important; }
+        .wrong { background: #f8d7da !important; border-color: #dc3545 !important; }
 
-        .grade-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-            gap: 10px;
-            margin-top: 20px;
-        }
-
-        .grade-btn {
-            padding: 15px;
-            border: 2px solid var(--primary);
-            background: white;
-            border-radius: 8px;
-            cursor: pointer;
-        }
-
-        /* --- Chat Grensesnitt --- */
-        #ai-chat {
-            max-width: 700px;
-            margin: 20px auto;
-            width: 95%;
-        }
-
-        #chat-window {
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-            height: 500px;
-            display: flex;
-            flex-direction: column;
-        }
-
-        #chat-messages {
-            flex: 1;
-            padding: 20px;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-
-        .message {
-            max-width: 80% ;
-            padding: 12px 16px;
-            border-radius: 15px;
-            line-height: 1.5;
-        }
-
-        .ai-msg { background: var(--ai-bubble); align-self: flex-start; border-bottom-left-radius: 2px; }
-        .user-msg { background: var(--user-bubble); align-self: flex-end; border-bottom-right-radius: 2px; }
-
-        .chat-input-area {
-            padding: 20px;
-            border-top: 1px solid #eee;
-            display: flex;
-            gap: 10px;
-        }
-
-        input[type="text"] {
-            flex: 1;
-            padding: 12px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            outline: none;
-        }
-
-        .status-tag {
-            font-size: 0.8rem;
-            color: #7f8c8d;
-            margin-bottom: 5px;
-            display: block;
-        }
+        .hero-img { width: 100%; max-width: 300px; border-radius: 15px; margin-bottom: 20px; }
+        .grade-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); gap: 10px; }
     </style>
 </head>
 <body>
 
     <section id="landing">
         <h1>Velkommen til Lærehjelp</h1>
-        <div class="hero-image">
-            <img src="https://images.unsplash.com/photo-1503676260728-1c00da094a0b?auto=format&fit=crop&w=400" alt="Læring" style="width:100%; height:100%; object-fit:cover;">
-        </div>
-        <button class="btn-main" onclick="showSection('grade-select')">Start</button>
+        <img src="https://images.unsplash.com/photo-1497633762265-9d179a990aa6?w=400" class="hero-img">
+        <br>
+        <button class="btn btn-primary" style="font-size: 1.5rem;" onclick="goTo('grade-select')">Start</button>
     </section>
 
     <section id="grade-select" class="hidden">
         <h2>Hvilket trinn går du på?</h2>
-        <div class="grade-grid" id="gradeButtons"></div>
+        <div class="grade-grid" id="gradeContainer"></div>
     </section>
 
     <section id="dashboard" class="hidden">
-        <h2 id="welcome-title">Lærehjelp</h2>
-        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px; margin-top: 20px;">
-            <button class="btn-main" onclick="showSection('ai-chat')" style="background: #8e44ad;">🤖 AI Chat</button>
-            <button class="btn-main" onclick="alert('Quiz kommer!')">📝 Quiz</button>
-            <button class="btn-main" onclick="alert('Gloser kommer!')">🔤 Gloser</button>
-        </div>
+        <h1 id="dash-title">Lærehjelp</h1>
+        <div class="card" onclick="goTo('ai-chat')"><h3>🤖 AI Hjelper</h3><p>Få forklaringer, men ta kontrollspørsmål for å lære.</p></div>
+        <div class="card" onclick="startQuizMenu()"><h3>📝 Quiz</h3><p>Test deg selv i dine fag.</p></div>
+        <div class="card" onclick="alert('Glosetrener kommer snart!')"><h3>🔤 Gloseprøve</h3><p>Øv på ord og uttrykk.</p></div>
+        <button class="btn btn-outline" onclick="goTo('grade-select')">← Bytt trinn</button>
     </section>
 
     <section id="ai-chat" class="hidden">
-        <div id="chat-window">
-            <div id="chat-messages">
-                <div class="message ai-msg">Hei! Jeg er din lærepartner. Jeg forklarer deg ting, men du må vise at du forstår før vi går videre. Hva vil du lære om i dag?</div>
-            </div>
-            <div class="chat-input-area">
-                <input type="text" id="userInput" placeholder="Skriv her...">
-                <button class="btn-main" onclick="sendMessage()" style="padding: 10px 20px;">Send</button>
+        <div class="card">
+            <div id="messages"></div>
+            <div id="lock-msg" style="color: red; font-size: 0.8rem; margin-bottom: 5px;" class="hidden">🔒 Svar på spørsmålet over først!</div>
+            <div style="display: flex; gap: 10px;">
+                <input type="text" id="chatInput" style="flex:1; padding:10px; border-radius:20px; border:1px solid #ddd;" placeholder="Spør om hva som helst...">
+                <button class="btn btn-primary" onclick="handleChat()">Send</button>
             </div>
         </div>
-        <center><button onclick="showSection('dashboard')" style="background:none; border:none; color:blue; cursor:pointer; margin-top:10px;">← Tilbake</button></center>
+        <button class="btn btn-outline" onclick="goTo('dashboard')">Tilbake</button>
+    </section>
+
+    <section id="quiz-menu" class="hidden">
+        <h2>Velg et fag</h2>
+        <div id="subject-list">
+            <button class="btn btn-outline" onclick="loadQuiz('Matte')">Matte</button>
+            <button class="btn btn-outline" onclick="loadQuiz('Naturfag')">Naturfag</button>
+            <button class="btn btn-outline" onclick="loadQuiz('Samfunnsfag')">Samfunnsfag</button>
+        </div>
+        <br>
+        <button class="btn btn-outline" onclick="goTo('dashboard')">Tilbake</button>
+    </section>
+
+    <section id="quiz-play" class="hidden">
+        <div class="card">
+            <h2 id="quiz-q">Spørsmål her</h2>
+            <div id="quiz-options"></div>
+            <div id="quiz-feedback" style="margin-top: 20px; font-weight: bold;"></div>
+        </div>
+        <button id="next-q-btn" class="btn btn-primary hidden" onclick="nextQuestion()">Neste spørsmål</button>
     </section>
 
     <script>
-        // Logikk for trinn
-        const grades = ["3. klasse", "4. klasse", "5. klasse", "6. klasse", "7. klasse", "8. klasse", "9. klasse", "10. klasse", "VG1", "VG2", "VG3"];
-        const grid = document.getElementById('gradeButtons');
-        grades.forEach(g => {
-            const b = document.createElement('button');
-            b.className = 'grade-btn';
-            b.innerText = g;
-            b.onclick = () => {
-                document.getElementById('welcome-title').innerText = "Lærehjelp for " + g;
-                showSection('dashboard');
-            };
-            grid.appendChild(b);
-        });
+        let userGrade = "";
+        let currentQuiz = [];
+        let qIndex = 0;
+        let isChatLocked = false;
+        let chatChallenge = "";
 
-        function showSection(id) {
+        // Databaser
+        const quizData = {
+            "3. klasse": {
+                "Matte": [
+                    { q: "Hva er 5 + 7?", a: ["10", "12", "13"], c: "12" },
+                    { q: "Hva er halvparten av 20?", a: ["5", "10", "15"], c: "10" }
+                ],
+                "Naturfag": [
+                    { q: "Hvilken farge har gresset?", a: ["Blått", "Grønt", "Rødt"], c: "Grønt" }
+                ]
+            },
+            "VG1": {
+                "Matte": [
+                    { q: "Hva er kvadratroten av 81?", a: ["7", "8", "9"], c: "9" },
+                    { q: "Løs for x: 2x = 10", a: ["2", "5", "8"], c: "5" }
+                ],
+                "Samfunnsfag": [
+                    { q: "Hvor ofte er det stortingsvalg i Norge?", a: ["Hvert 2. år", "Hvert 4. år", "Hvert 6. år"], c: "Hvert 4. år" }
+                ]
+            }
+        };
+
+        // Navigasjon
+        function goTo(id) {
             document.querySelectorAll('section').forEach(s => s.classList.add('hidden'));
             document.getElementById(id).classList.remove('hidden');
         }
 
-        // --- AVANSERT AI LOGIKK ---
-        let chatState = "idle"; // idle, waiting_for_note, waiting_for_answer
-        let correctAnswer = "";
+        // Oppstart trinnvalg
+        const grades = ["3. klasse", "4. klasse", "5. klasse", "6. klasse", "7. klasse", "8. klasse", "9. klasse", "10. klasse", "VG1", "VG2", "VG3"];
+        const grid = document.getElementById('gradeContainer');
+        grades.forEach(g => {
+            let b = document.createElement('button');
+            b.className = 'btn btn-outline';
+            b.innerText = g;
+            b.onclick = () => { 
+                userGrade = g; 
+                document.getElementById('dash-title').innerText = "Lærehjelp for " + g;
+                goTo('dashboard'); 
+            };
+            grid.appendChild(b);
+        });
 
-        function addMessage(text, sender) {
-            const msgDiv = document.createElement('div');
-            msgDiv.className = `message ${sender}-msg`;
-            msgDiv.innerText = text;
-            document.getElementById('chat-messages').appendChild(msgDiv);
-            const win = document.getElementById('chat-messages');
-            win.scrollTop = win.scrollHeight;
+        // --- AI CHAT LOGIKK ---
+        function addMsg(txt, cls) {
+            const m = document.createElement('div');
+            m.className = `msg ${cls}`;
+            m.innerText = txt;
+            const box = document.getElementById('messages');
+            box.appendChild(m);
+            box.scrollTop = box.scrollHeight;
         }
 
-        function sendMessage() {
-            const input = document.getElementById('userInput');
+        function handleChat() {
+            const input = document.getElementById('chatInput');
             const val = input.value.trim();
-            if (!val) return;
+            if(!val) return;
 
-            addMessage(val, 'user');
+            addMsg(val, 'user');
             input.value = "";
 
+            if(isChatLocked) {
+                if(val.toLowerCase().includes(chatChallenge)) {
+                    addMsg("Helt riktig! Du har fulgt med. Nå kan du spørre om noe nytt.", "ai");
+                    isChatLocked = false;
+                    document.getElementById('lock-msg').classList.add('hidden');
+                } else {
+                    addMsg("Ikke helt... se på forklaringen min over en gang til. Prøv igjen!", "ai");
+                }
+                return;
+            }
+
+            // Simuler AI svar
             setTimeout(() => {
-                handleAIResponse(val.toLowerCase());
-            }, 600);
+                let response = "Jeg kan fortelle deg om det! Men for å sjekke at du forstår...";
+                let challengeText = "";
+
+                if(val.toLowerCase().includes("verdenskrig")) {
+                    response = "Første verdenskrig startet i 1914 etter skuddet i Sarajevo. Det ble en grusom krig i skyttergraver som varte i fire år.";
+                    challengeText = "Hvilket årstall startet krigen?";
+                    chatChallenge = "1914";
+                } else {
+                    response = "Dette lærer man ofte om i " + userGrade + ". Det handler om å forstå sammenhengen mellom årsak og virkning.";
+                    challengeText = "Skriv ordet 'læring' for å fortsette.";
+                    chatChallenge = "læring";
+                }
+
+                addMsg(response, "ai");
+                setTimeout(() => {
+                    addMsg("💡 Kontrollspørsmål: " + challengeText, "ai");
+                    isChatLocked = true;
+                    document.getElementById('lock-msg').classList.remove('hidden');
+                }, 1000);
+            }, 500);
         }
 
-        function handleAIResponse(val) {
-            // 1. Sjekk om vi venter på at brukeren skal ta notater
-            if (chatState === "waiting_for_note") {
-                if (val.includes("ok") || val.includes("notert") || val.includes("ferdig")) {
-                    chatState = "waiting_for_answer";
-                    correctAnswer = "oslo"; // Eksempel-svar
-                    addMessage("Supert! Da er du klar for en sjekk. Hva er hovedstaden i Norge?", "ai");
-                } else {
-                    addMessage("Skriv 'notert' eller 'ok' når du har skrevet det ned, så går vi videre!", "ai");
-                }
+        // --- QUIZ LOGIKK ---
+        function startQuizMenu() {
+            goTo('quiz-menu');
+        }
+
+        function loadQuiz(subject) {
+            const data = quizData[userGrade] && quizData[userGrade][subject] ? quizData[userGrade][subject] : null;
+            
+            if(!data) {
+                alert("Beklager, vi har ikke laget quiz for " + subject + " på " + userGrade + " ennå. Prøv Matte på 3. klasse eller VG1!");
                 return;
             }
 
-            // 2. Sjekk om vi venter på et svar (kontrollspørsmål)
-            if (chatState === "waiting_for_answer") {
-                if (val.includes(correctAnswer)) {
-                    chatState = "idle";
-                    addMessage("Helt riktig! Bra jobbet. Nå har du kontroll på dette. Er det noe annet du lurer på?", "ai");
-                } else {
-                    addMessage("Ikke helt riktig. Husk at dette er den største byen i Norge og ligger innerst i en fjord. Prøv å svare på nytt!", "ai");
-                }
-                return;
-            }
+            currentQuiz = data;
+            qIndex = 0;
+            showQuestion();
+            goTo('quiz-play');
+        }
 
-            // 3. Vanlig modus - AI forklarer og setter en sperre
-            if (val.includes("hovedstaden") || val.includes("norge")) {
-                addMessage("Hovedstaden i Norge er Oslo. Der ligger Stortinget og Slottet. Før vi går videre, vil jeg at du tar et notat om dette. Skriv 'notert' når du er ferdig.", "ai");
-                chatState = "waiting_for_note";
-            } else if (val.includes("fotosyntese")) {
-                addMessage("Fotosyntese er når planter bruker sollys, vann og CO2 for å lage sukker og oksygen. Skriv dette ned i boka di eller på en lapp, og si 'ok' når du er klar for et spørsmål.", "ai");
-                chatState = "waiting_for_note";
-                correctAnswer = "oksygen"; // Neste spørsmål vil handle om dette
+        function showQuestion() {
+            const q = currentQuiz[qIndex];
+            document.getElementById('quiz-q').innerText = q.q;
+            const optDiv = document.getElementById('quiz-options');
+            optDiv.innerHTML = "";
+            document.getElementById('quiz-feedback').innerText = "";
+            document.getElementById('next-q-btn').classList.add('hidden');
+
+            q.a.forEach(alt => {
+                const b = document.createElement('button');
+                b.className = 'quiz-option';
+                b.innerText = alt;
+                b.onclick = () => checkQuizAnswer(alt, q.c, b);
+                optDiv.appendChild(b);
+            });
+        }
+
+        function checkQuizAnswer(selected, correct, btn) {
+            const options = document.querySelectorAll('.quiz-option');
+            options.forEach(o => o.style.pointerEvents = "none"); // Lås knapper
+
+            if(selected === correct) {
+                btn.classList.add('correct');
+                document.getElementById('quiz-feedback').innerText = "✅ Riktig! Bra jobbet.";
+                document.getElementById('quiz-feedback').style.color = "green";
             } else {
-                addMessage("Det kan jeg hjelpe deg med! Men først må vi legge en plan. Vil du at jeg skal forklare konseptet først, eller vil du ha et hint?", "ai");
+                btn.classList.add('wrong');
+                document.getElementById('quiz-feedback').innerText = "❌ Feil. Riktig svar var: " + correct;
+                document.getElementById('quiz-feedback').style.color = "red";
             }
+            document.getElementById('next-q-btn').classList.remove('hidden');
         }
 
-        document.getElementById('userInput').addEventListener('keypress', (e) => { if(e.key === 'Enter') sendMessage() });
+        function nextQuestion() {
+            qIndex++;
+            if(qIndex < currentQuiz.length) {
+                showQuestion();
+            } else {
+                alert("Quizen er ferdig! Du er kjempeflink.");
+                goTo('dashboard');
+            }
+        }
     </script>
 </body>
 </html>
